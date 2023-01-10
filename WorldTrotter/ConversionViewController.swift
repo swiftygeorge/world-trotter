@@ -39,21 +39,21 @@ class ConversionViewController: UIViewController, UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let existingTextHasDecimalSeperator = textField.text?.range(of: ".")
-        let replacementTextHasDecimalSeperator = string.range(of: ".")
-        if existingTextHasDecimalSeperator != nil,
-           replacementTextHasDecimalSeperator != nil {
+        let currentLocale = Locale.current
+        let decimalSeperator = currentLocale.decimalSeparator ?? "."
+        let existingTextHasDecimalSeperator = textField.text?.range(of: decimalSeperator)
+        let replacementTextHasDecimalSeperator = string.range(of: decimalSeperator)
+        if existingTextHasDecimalSeperator != nil, replacementTextHasDecimalSeperator != nil {
             return false
         } else {
-             return true
+            return true
         }
-        
     }
     
     @IBAction func fahrenheitFieldEditingChanged(_ textField: UITextField) {
         if let text = textField.text,
-           let value = Double(text) {
-            fahrenheitValue = Measurement(value: value, unit: .fahrenheit)
+           let number = numberFormatter.number(from: text) {
+            fahrenheitValue = Measurement(value: number.doubleValue, unit: .fahrenheit)
         } else {
             fahrenheitValue = nil
         }
